@@ -1057,7 +1057,7 @@ class ExecutionService implements ApplicationContextAware, StepExecutor, NodeSte
                     extraParams=[:]
                 }
                 Map<String, String> args = FrameworkService.parseOptsFromString(execution.argString)
-                loadSecureOptionStorageDefaults(scheduledExecution, extraParamsExposed, extraParams, authContext, true, args)
+                loadSecureOptionStorageDefaults(scheduledExecution, extraParamsExposed, extraParams, authContext, true, args, jobcontext)
             }
             String inputCharset=frameworkService.getDefaultInputCharsetForProject(execution.project)
 
@@ -1186,7 +1186,8 @@ class ExecutionService implements ApplicationContextAware, StepExecutor, NodeSte
             Map secureOpts,
             AuthContext authContext,
             boolean failIfMissingRequired=false,
-            Map<String, String> args = null
+            Map<String, String> args = null,
+            Map<String, String> job = null
     )
     {
         def found = scheduledExecution.options?.findAll {
@@ -1206,7 +1207,16 @@ class ExecutionService implements ApplicationContextAware, StepExecutor, NodeSte
                     if (args && defStoragePath?.contains('${option.')) {
                         defStoragePath = DataContextUtils.replaceDataReferencesInString(defStoragePath, DataContextUtils.addContext("option", args, null)).trim()
                     }
-                    def password = keystore.readPassword(defStoragePath)
+                    if (job && defStoragePath?.contains('${job.')) {
+                        defStoragePath = DataContextUtils.replaceDataReferencesInString(defStoragePath, DataContextUtils.addContext("job", job, null)).trim()
+                    }
+                    def password
+                    if (defStoragePath?.contains('${node.')) {
+                        password = defStoragePath //to be resolved later
+                    }else{
+                        password = keystore.readPassword(defStoragePath)
+                    }
+
                     if (it.secureExposed) {
                         secureOptsExposed[it.name] = new String(password)
                     } else {
