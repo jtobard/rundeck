@@ -142,36 +142,33 @@ class ExecutionServiceImpl implements ExecutionService {
         //create node context for node and substitute data references in command
 
         boolean secureOptionReplaced = false;
-        //replace missing secure options with ${node.} data
-        Map<String, String> secureOptions = context.getDataContext().get("secureOption");
+        Map<String, String> nodeDeferredOptions = context.getDataContext().get("nodeDeferred");
         Map<String, String> options = context.getDataContext().get("option");
-        if(secureOptions != null) {
-            for (String key : secureOptions.keySet()) {
-                String val = secureOptions.get(key);
-                if (val.contains("${node.")) {
-                    if (options != null && options.containsKey(key)) {
-                        String currentValue = options.get(key);
-                        if (currentValue.equals(val)) {
-                            //replace node references
-                            val = SharedDataContextUtils.replaceDataReferences(
-                                    val,
-                                    context.getSharedDataContext(),
-                                    //add node name to qualifier to read node-data first
-                                    ContextView.node(node.getNodename()),
-                                    ContextView::nodeStep,
-                                    DataContextUtils.replaceMissingOptionsWithBlank,
-                                    false,
-                                    false
-                            );
-                            try {
-                                InputStream defaultVal = context.getStorageTree().getResource(val).getContents().getInputStream();
-                                String pass = CharStreams.toString(new InputStreamReader(
-                                        defaultVal, Charsets.UTF_8));
-                                context.getDataContext().get("option").put(key, pass);
-                                secureOptionReplaced = true;
-                            } catch (IOException ex) {
-                                throw new NodeStepException(ex, StepFailureReason.Unknown, node.getNodename());
-                            }
+        if(nodeDeferredOptions != null) {
+            for (String key : nodeDeferredOptions.keySet()) {
+                String val = nodeDeferredOptions.get(key);
+                if (options != null && options.containsKey(key)) {
+                    String currentValue = options.get(key);
+                    if (currentValue.equals(val)) {
+                        //replace node references
+                        val = SharedDataContextUtils.replaceDataReferences(
+                                val,
+                                context.getSharedDataContext(),
+                                //add node name to qualifier to read node-data first
+                                ContextView.node(node.getNodename()),
+                                ContextView::nodeStep,
+                                DataContextUtils.replaceMissingOptionsWithBlank,
+                                false,
+                                false
+                        );
+                        try {
+                            InputStream defaultVal = context.getStorageTree().getResource(val).getContents().getInputStream();
+                            String pass = CharStreams.toString(new InputStreamReader(
+                                    defaultVal, Charsets.UTF_8));
+                            context.getDataContext().get("option").put(key, pass);
+                            secureOptionReplaced = true;
+                        } catch (IOException ex) {
+                            throw new NodeStepException(ex, StepFailureReason.Unknown, node.getNodename());
                         }
                     }
                 }
