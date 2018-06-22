@@ -159,4 +159,16 @@ public interface ScmExportPlugin {
     default Map clusterFixJobs(List<JobExportReference> jobs){
         return null;
     }
+
+    /**
+     * Function to fix status of the jobs on cluster environment.
+     * To automatically match the job status on every node.
+     * Context for https configuration
+     * @param context scm auth context
+     * @param jobs rundeck jobs
+     * @return map with information on the process
+     */
+    default Map clusterFixJobs(ScmOperationContext context, List<JobExportReference> jobs){
+        return null;
+    }
 }
