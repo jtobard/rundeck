@@ -43,6 +43,11 @@ class JobSchedulerService implements JobScheduleManager {
     boolean updateScheduleOwner(final String name, final String group, final Map data) {
         return rundeckJobScheduleManager.updateScheduleOwner(name, group, data)
     }
+
+    @Override
+    List<Map<String,Object>> getMessage(String namespace, String topic){
+        return rundeckJobScheduleManager.getMessage(namespace,topic)
+    }
 }
 
 /**
@@ -102,5 +107,10 @@ class QuartzJobScheduleManager implements JobScheduleManager {
     @Override
     boolean updateScheduleOwner(final String name, final String group, final Map data) {
         return true
+    }
+
+    @Override
+    List<Map<String,Object>> getMessage(String namespace, String topic){
+        return []
     }
 }

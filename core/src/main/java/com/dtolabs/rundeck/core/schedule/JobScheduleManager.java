@@ -17,6 +17,7 @@
 package com.dtolabs.rundeck.core.schedule;
 
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -67,4 +68,12 @@ public interface JobScheduleManager {
      * @return true if the scheduleOWner should change to current node.
      */
     boolean updateScheduleOwner(String name, String group, Map data);
+
+    /**
+    *Search a message by namespace and topic if the messaging system is available
+    * @param namespace namespace of the message
+    * @param topic topic of the message
+    * @return List of messages
+    */
+    List<Map<String,Object>> getMessage(String namespace, String topic);
 }

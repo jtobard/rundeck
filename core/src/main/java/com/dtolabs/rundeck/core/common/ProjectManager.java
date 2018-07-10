@@ -17,6 +17,8 @@
 package com.dtolabs.rundeck.core.common;
 
 import java.util.Collection;
+import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 
 /**
@@ -85,4 +87,12 @@ public interface ProjectManager {
      * @throws IllegalArgumentException if the project already exists
      */
     IRundeckProject createFrameworkProjectStrict(String projectName, Properties properties);
+
+    /**
+    *Search a message by namespace and topic if the messaging system is available
+    * @param namespace namespace of the message
+    * @param topic topic of the message
+    * @return List of messages
+    */
+    List<Map<String,Object>> getMessage(String namespace, String topic);
 }

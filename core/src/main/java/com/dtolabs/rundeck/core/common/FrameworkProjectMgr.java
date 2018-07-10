@@ -265,4 +265,8 @@ public class FrameworkProjectMgr extends FrameworkResource implements IFramework
     public void setNodesFactory(IProjectNodesFactory nodesFactory) {
         this.nodesFactory = nodesFactory;
     }
+
+    public List<Map<String,Object>> getMessage(String namespace, String topic){
+        return null;
+    }
 }

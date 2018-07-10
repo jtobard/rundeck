@@ -78,6 +78,7 @@ class ProjectManagerService implements ProjectManager, ApplicationContextAware, 
     def grailsApplication
     def metricService
     def nodeService
+    def jobSchedulerService
     /**
      * Scheduled executor for retries
      */
@@ -827,5 +828,11 @@ class ProjectManagerService implements ProjectManager, ApplicationContextAware, 
                 markProjectAsImported(source,other.name)
             }
         }
+    }
+
+    @Override
+    List<Map<String,Object>> getMessage(String namespace, String topic){
+        def msg = jobSchedulerService.getMessage(namespace,topic)
+        return msg
     }
 }
